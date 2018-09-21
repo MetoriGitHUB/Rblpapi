@@ -19,7 +19,7 @@ call, and retrieved via the internal function
 \code{defaultConnection}.}
 }
 \value{
-The returned object should be passed to subsequent data 
+The returned object should be passed to subsequent data
 calls via bdp(), bds(), etc.
 }
 \description{

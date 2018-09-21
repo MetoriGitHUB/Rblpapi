@@ -27,8 +27,8 @@
 ##' @param con A connection object as created by a \code{blpConnect}
 ##' call, and retrieved via the internal function
 ##' \code{defaultConnection}.
-##' @return The returned object should be passed to subsequent data 
-##' calls via bdp(), bds(), etc.  
+##' @return The returned object should be passed to subsequent data
+##' calls via bdp(), bds(), etc.
 ##' @author Whit Armstrong and Dirk Eddelbuettel
 ##' @examples
 ##' \dontrun{
@@ -37,15 +37,22 @@
 ##' bdp("IBM US Equity", "NAME", identity=blpid)
 ##' }
 
-blpAuthenticate <- function(uuid, host="localhost", ip.address, con=defaultConnection()) {
-    if (missing(ip.address)) {
-        ## Linux only ?
-        cmd.res <- system(paste("host",host), intern=TRUE,
-                          ignore.stdout=FALSE, ignore.stderr=FALSE,wait=TRUE)
-        ip.address <- strsplit(cmd.res,"address ")[[1]][2]
+blpAuthenticate <- function(uuid = NULL, host="localhost", ip.address, con=defaultConnection()) {
+
+    if (is.null(uuid)){
+        authenticateApp_Impl(con)
+    } else {
+        if (missing(ip.address)) {
+            ## Linux only ?
+            cmd.res <- system(paste("host",host), intern=TRUE,
+                              ignore.stdout=FALSE, ignore.stderr=FALSE,wait=TRUE)
+            ip.address <- strsplit(cmd.res,"address ")[[1]][2]
+        }
+        authenticate_Impl(con, as.character(uuid), ip.address)
     }
-    authenticate_Impl(con, as.character(uuid), ip.address)
 }
+
+
 
 #### TODO: rename to just 'authenticate' ?
 

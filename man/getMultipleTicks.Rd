@@ -5,9 +5,9 @@
 \title{Get Multiple Ticks from Bloomberg}
 \usage{
 getMultipleTicks(security, eventType = c("TRADE", "BID", "ASK"),
-  startTime = Sys.time() - 60 * 60, endTime = Sys.time(), verbose = FALSE,
-  returnAs = getOption("blpType", "data.frame"), tz = Sys.getenv("TZ", unset
-  = "UTC"), con = defaultConnection())
+  startTime = Sys.time() - 60 * 60, endTime = Sys.time(),
+  verbose = FALSE, returnAs = getOption("blpType", "data.frame"),
+  tz = Sys.getenv("TZ", unset = "UTC"), con = defaultConnection())
 }
 \arguments{
 \item{security}{A character variable describing a valid security ticker}

@@ -4,8 +4,8 @@
 \alias{bdp}
 \title{Run 'Bloomberg Data Point' Queries}
 \usage{
-bdp(securities, fields, options = NULL, overrides = NULL, verbose = FALSE,
-  identity = NULL, con = defaultConnection())
+bdp(securities, fields, options = NULL, overrides = NULL,
+  verbose = FALSE, identity = NULL, con = defaultConnection())
 }
 \arguments{
 \item{securities}{A character vector with security symbols in

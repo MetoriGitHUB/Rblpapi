@@ -4,12 +4,12 @@
 \alias{lookupSecurity}
 \title{Look up symbol from Bloomberg}
 \usage{
-lookupSecurity(query, yellowkey = c("none", "cmdt", "eqty", "muni", "prfd",
-  "clnt", "mmkt", "govt", "corp", "indx", "curr", "mtge"),
+lookupSecurity(query, yellowkey = c("none", "cmdt", "eqty", "muni",
+  "prfd", "clnt", "mmkt", "govt", "corp", "indx", "curr", "mtge"),
   language = c("none", "english", "kanji", "french", "german", "spanish",
-  "portuguese", "italian", "chinese_trad", "korean", "chinese_simp", "none_1",
-  "none_2", "none_3", "none_4", "none_5", "russian"), maxResults = 20,
-  verbose = FALSE, con = defaultConnection())
+  "portuguese", "italian", "chinese_trad", "korean", "chinese_simp",
+  "none_1", "none_2", "none_3", "none_4", "none_5", "russian"),
+  maxResults = 20, verbose = FALSE, con = defaultConnection())
 }
 \arguments{
 \item{query}{A character variable describing the name of the company; for

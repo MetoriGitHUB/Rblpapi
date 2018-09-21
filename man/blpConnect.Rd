@@ -5,7 +5,8 @@
 \title{Establish connection to Bloomberg service}
 \usage{
 blpConnect(host = getOption("blpHost", "localhost"),
-  port = getOption("blpPort", 8194L), default = TRUE)
+  port = getOption("blpPort", 8194L), application = "",
+  default = TRUE)
 }
 \arguments{
 \item{host}{A character option with either a machine name that is
@@ -47,7 +48,7 @@ explicitly create such an object.
 }
 }
 \seealso{
-Many SAPI and bPipe connections require authentication 
+Many SAPI and bPipe connections require authentication
 via \code{blpAuthenticate} after \code{blpConnect}.
 }
 \author{

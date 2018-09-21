@@ -4,8 +4,8 @@
 \alias{bds}
 \title{Run 'Bloomberg Data Set' Queries}
 \usage{
-bds(security, field, options = NULL, overrides = NULL, verbose = FALSE,
-  identity = NULL, con = defaultConnection())
+bds(security, field, options = NULL, overrides = NULL,
+  verbose = FALSE, identity = NULL, con = defaultConnection())
 }
 \arguments{
 \item{security}{A character value with a single security symbol in

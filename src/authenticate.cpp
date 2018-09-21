@@ -34,8 +34,10 @@ using BloombergLP::blpapi::Identity;
 using BloombergLP::blpapi::Service;
 using BloombergLP::blpapi::Request;
 using BloombergLP::blpapi::Event;
+using BloombergLP::blpapi::EventQueue;
 using BloombergLP::blpapi::Message;
 using BloombergLP::blpapi::MessageIterator;
+using BloombergLP::blpapi::CorrelationId;
 
 static void identityFinalizer(SEXP identity_) {
     Identity* identity = reinterpret_cast<Identity*>(R_ExternalPtrAddr(identity_));
@@ -45,13 +47,13 @@ static void identityFinalizer(SEXP identity_) {
     }
 }
 
-// Simpler interface 
+// Simpler interface
 //
 // [[Rcpp::export]]
 SEXP authenticate_Impl(SEXP con_, SEXP uuid_, SEXP ip_address_) {
 
     // via Rcpp Attributes we get a try/catch block with error propagation to R "for free"
-    Session* session = 
+    Session* session =
         reinterpret_cast<Session*>(checkExternalPointer(con_, "blpapi::Session*"));
 
     if (uuid_ == R_NilValue || ip_address_ == R_NilValue) {
@@ -85,6 +87,7 @@ SEXP authenticate_Impl(SEXP con_, SEXP uuid_, SEXP ip_address_) {
                             "AuthorizationSuccess")!=0) {
                 Rcpp::stop("Authorization request failed.\n");
             }
+            msgIter.message().print(std::cout);
         default:
             while (msgIter.next()) {
                 Message msg = msgIter.message();
@@ -93,5 +96,79 @@ SEXP authenticate_Impl(SEXP con_, SEXP uuid_, SEXP ip_address_) {
         }
         if (event.eventType() == Event::RESPONSE) { break; }
     }
+    printf("Return external pointer");
     return createExternalPointer<Identity>(identity_p,identityFinalizer,"blpapi::Identity*");
 }
+
+
+
+// Simpler interface
+//
+// [[Rcpp::export]]
+SEXP authenticateApp_Impl(SEXP con_) {
+
+    // via Rcpp Attributes we get a try/catch block with error propagation to R "for free"
+    Session* session =
+        reinterpret_cast<Session*>(checkExternalPointer(con_, "blpapi::Session*"));
+
+    const std::string authsrv = "//blp/apiauth";
+    if (!session->openService(authsrv.c_str())) {
+        Rcpp::stop("Failed to open " + authsrv);
+    }
+
+    Service apiAuthSvc = session->getService(authsrv.c_str());
+    Request authorizationRequest = apiAuthSvc.createAuthorizationRequest();
+    Identity* identity_p = new Identity(session->createIdentity());
+
+    EventQueue tokenEventQueue;
+    session->generateToken(CorrelationId(), &tokenEventQueue);
+    std::string token;
+    Event event = tokenEventQueue.nextEvent();
+    if (event.eventType() == Event::TOKEN_STATUS) {
+        MessageIterator iter(event);
+        while (iter.next()) {
+            Message msg = iter.message();
+            msg.print(std::cout);
+            if (msg.messageType() == "TokenGenerationSuccess") {
+                token = msg.getElementAsString("token");
+            }
+            else if (msg.messageType() == "TokenGenerationFailure") {
+                break;
+            }
+        }
+    }
+
+    authorizationRequest.set("token", token.c_str());
+    printf("SendAuthorizationRequest");
+    session->sendAuthorizationRequest(authorizationRequest, identity_p);
+
+    while (true) {
+        Event event = session->nextEvent();
+        MessageIterator msgIter(event);
+
+        switch (event.eventType()) {
+        case Event::RESPONSE:
+        case Event::PARTIAL_RESPONSE:
+            msgIter.next();
+            if (std::strcmp(msgIter.message().asElement().name().string(),
+                            "AuthorizationSuccess")!=0) {
+                Rcpp::stop("Authorization request failed.\n");
+            }
+            msgIter.message().print(std::cout);
+        default:
+                while (msgIter.next()) {
+                    Message msg = msgIter.message();
+                    msg.print(std::cout);
+                    //FIXME:: capture error msg here
+                }
+        }
+        if (event.eventType() == Event::RESPONSE) { break; }
+    }
+    printf("Return external pointer");
+    return createExternalPointer<Identity>(identity_p,identityFinalizer,"blpapi::Identity*");
+}
+
+
+
+
+

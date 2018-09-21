@@ -37,15 +37,16 @@ static void sessionFinalizer(SEXP session_) {
 }
 
 // [[Rcpp::export]]
-SEXP blpConnect_Impl(const std::string host, const int port) {
+SEXP blpConnect_Impl(const std::string host, const int port, const std::string application) {
     SessionOptions sessionOptions;
     sessionOptions.setServerHost(host.c_str());
     sessionOptions.setServerPort(port);
+    sessionOptions.setAuthenticationOptions(application.c_str());
     Session* sp = new Session(sessionOptions);
 
     if (!sp->start()) {
         Rcpp::stop("Failed to start session.\n");
     }
-    
+
     return createExternalPointer<Session>(sp, sessionFinalizer, "blpapi::Session*");
 }

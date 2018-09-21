@@ -4,7 +4,8 @@
 \alias{fieldSearch}
 \title{Search for matching data fields}
 \usage{
-fieldSearch(searchterm, excludeterm = "Static", con = defaultConnection())
+fieldSearch(searchterm, excludeterm = "Static",
+  con = defaultConnection())
 }
 \arguments{
 \item{searchterm}{A string with the term to search for}
