@@ -1,4 +1,4 @@
-useDynLib("Rblpapi", .registration=TRUE)
+useDynLib("mRblpapi", .registration=TRUE)
 
 import("Rcpp")
 importFrom("utils", "object.size", "packageVersion")

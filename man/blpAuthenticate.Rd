@@ -4,7 +4,7 @@
 \alias{blpAuthenticate}
 \title{Authenticate Bloomberg API access}
 \usage{
-blpAuthenticate(uuid, host = "localhost", ip.address,
+blpAuthenticate(uuid = NULL, host = "localhost", ip.address,
   con = defaultConnection())
 }
 \arguments{
